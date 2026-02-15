@@ -6,6 +6,12 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import Learn from './pages/Learn';
+import Exercises from './pages/Exercises';
+import Courses from './pages/Courses';
+import MyDashboard from './pages/MyDashboard';
+import Interview from './pages/Interview';
+import Dialogue from './pages/Dialogue';
 
 function App() {
   return (
@@ -34,6 +40,54 @@ function App() {
             element={
               <ProtectedRoute requireSuperAdmin>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/learn"
+            element={
+              <ProtectedRoute>
+                <Learn />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/exercises"
+            element={
+              <ProtectedRoute>
+                <Exercises />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/courses"
+            element={
+              <ProtectedRoute>
+                <Courses />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-dashboard"
+            element={
+              <ProtectedRoute>
+                <MyDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/interview"
+            element={
+              <ProtectedRoute>
+                <Interview />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dialogue"
+            element={
+              <ProtectedRoute>
+                <Dialogue />
               </ProtectedRoute>
             }
           />

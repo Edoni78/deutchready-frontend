@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getDashboardStats } from '../api/dashboard';
 import { getWords, createWord, deleteWord } from '../api/words';
-import { useNavigate } from 'react-router-dom';
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
@@ -65,22 +65,32 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" />
+      <div className="min-h-screen flex items-center justify-center bg-cream-50">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl border-2 border-brand-200 border-t-brand-600 animate-spin" />
+          <p className="text-stone-500 text-sm">Loading dashboard...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <header className="bg-white border-b border-slate-200">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="text-xl font-bold text-slate-800">DeutchReady Dashboard</h1>
+    <div className="min-h-screen bg-cream-50">
+      {/* Header */}
+      <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-xl border-b border-stone-100">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-2 text-stone-700 hover:text-brand-600 transition-colors">
+            <div className="w-9 h-9 rounded-xl bg-brand-600 flex items-center justify-center shadow-soft">
+              <span className="text-sm font-bold text-white">D</span>
+            </div>
+            <span className="font-bold text-lg">DeutchReady</span>
+            <span className="text-stone-400 text-sm font-medium ml-1">· Dashboard</span>
+          </Link>
           <div className="flex items-center gap-4">
-            <span className="text-sm text-slate-600">{user?.email}</span>
+            <span className="text-sm text-stone-500 hidden sm:inline">{user?.username || user?.email}</span>
             <button
               onClick={handleLogout}
-              className="text-sm text-slate-600 hover:text-slate-900"
+              className="px-4 py-2 text-sm font-medium text-stone-600 hover:text-stone-800 hover:bg-stone-100 rounded-xl transition-colors"
             >
               Logout
             </button>
@@ -88,78 +98,84 @@ export default function Dashboard() {
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 py-8 space-y-8">
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+        {/* Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="bg-white rounded-lg border border-slate-200 p-6">
-            <p className="text-slate-500 text-sm">Words</p>
-            <p className="text-2xl font-bold text-slate-800">{stats.wordCount}</p>
+          <div className="card p-6 border-l-4 border-l-brand-500">
+            <p className="text-stone-500 text-sm font-medium mb-1">Words</p>
+            <p className="text-3xl font-bold text-stone-800">{stats.wordCount}</p>
           </div>
-          <div className="bg-white rounded-lg border border-slate-200 p-6">
-            <p className="text-slate-500 text-sm">Users</p>
-            <p className="text-2xl font-bold text-slate-800">{stats.userCount}</p>
+          <div className="card p-6 border-l-4 border-l-warm-500">
+            <p className="text-stone-500 text-sm font-medium mb-1">Users</p>
+            <p className="text-3xl font-bold text-stone-800">{stats.userCount}</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border border-slate-200 p-6">
-          <h2 className="text-lg font-semibold text-slate-800 mb-4">Add Word</h2>
-          <form onSubmit={handleAddWord} className="flex flex-wrap gap-3">
+        {/* Add word */}
+        <div className="card p-6">
+          <h2 className="text-lg font-semibold text-stone-800 mb-4">Add new word</h2>
+          <form onSubmit={handleAddWord} className="flex flex-col sm:flex-row gap-3">
             <input
               type="text"
               value={newGerman}
               onChange={(e) => setNewGerman(e.target.value)}
               placeholder="German"
-              className="px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              className="input-field flex-1 min-w-0"
             />
             <input
               type="text"
               value={newEnglish}
               onChange={(e) => setNewEnglish(e.target.value)}
               placeholder="English"
-              className="px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              className="input-field flex-1 min-w-0"
             />
             <input
               type="text"
               value={newCategory}
               onChange={(e) => setNewCategory(e.target.value)}
-              placeholder="Category (optional)"
-              className="px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              placeholder="Category"
+              className="input-field flex-1 min-w-0 sm:max-w-[140px]"
             />
-            <button
-              type="submit"
-              disabled={adding}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
-            >
+            <button type="submit" disabled={adding} className="btn-primary shrink-0 disabled:opacity-50">
               {adding ? 'Adding...' : 'Add'}
             </button>
           </form>
         </div>
 
-        <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
-          <h2 className="text-lg font-semibold text-slate-800 p-4 border-b border-slate-200">
-            Words
-          </h2>
-          <div className="divide-y divide-slate-200">
+        {/* Words list */}
+        <div className="card overflow-hidden">
+          <div className="px-6 py-4 border-b border-stone-100 flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-stone-800">Vocabulary</h2>
+            <span className="text-sm text-stone-500">{words.length} words</span>
+          </div>
+          <div className="divide-y divide-stone-100">
             {words.length === 0 ? (
-              <p className="p-4 text-slate-500 text-sm">No words yet. Add one above.</p>
+              <div className="p-12 text-center">
+                <div className="w-16 h-16 rounded-2xl bg-stone-100 flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl text-stone-400">📖</span>
+                </div>
+                <p className="text-stone-500 font-medium">No words yet</p>
+                <p className="text-stone-400 text-sm mt-1">Add your first word above</p>
+              </div>
             ) : (
               words.map((w) => (
                 <div
                   key={w.id}
-                  className="flex items-center justify-between px-4 py-3 hover:bg-slate-50"
+                  className="flex items-center justify-between px-6 py-4 hover:bg-cream-50/50 transition-colors group"
                 >
-                  <div>
-                    <span className="font-medium text-slate-800">{w.german}</span>
-                    <span className="text-slate-400 mx-2">→</span>
-                    <span className="text-slate-600">{w.english}</span>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="font-semibold text-stone-800">{w.german}</span>
+                    <span className="text-stone-300">→</span>
+                    <span className="text-stone-600">{w.english}</span>
                     {w.category && (
-                      <span className="ml-2 text-xs text-slate-400 bg-slate-100 px-2 py-0.5 rounded">
+                      <span className="text-xs font-medium text-brand-600 bg-brand-50 px-2.5 py-1 rounded-lg">
                         {w.category}
                       </span>
                     )}
                   </div>
                   <button
                     onClick={() => handleDeleteWord(w.id)}
-                    className="text-red-600 hover:text-red-700 text-sm"
+                    className="px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg opacity-0 group-hover:opacity-100 sm:opacity-100 transition-opacity"
                   >
                     Delete
                   </button>
